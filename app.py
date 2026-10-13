@@ -28,6 +28,10 @@ candidato_selecionado = st.sidebar.selectbox("Selecione o Candidato / Opção:",
 ufs = sorted(df['SG_UF'].unique())
 uf_selecionada = st.sidebar.selectbox("Selecione o Estado (UF) para detalhamento:", ufs)
 
+# Tile URL pública sem exigência de API Key (Esri WorldTopoMap)
+TILE_URL = 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}'
+TILE_ATTR = 'Esri WorldTopoMap'
+
 # ==========================================
 # 1. VISÃO GERAL DO PAÍS
 # ==========================================
@@ -39,12 +43,12 @@ votos_por_uf = df_candidato_geral.groupby('SG_UF')['QT_VOTOS'].sum().reset_index
 col_mapa_br, col_ranking_br = st.columns([1.2, 0.8])
 
 with col_mapa_br:
-    st.subheader("Mapa Geral do Brasil (Centro Nacional)")
-    # Mapa centralizado no Brasil utilizando 'CartoDB positron' (sem erro 403)
+    st.subheader("Mapa Geral do Brasil")
     mapa_brasil = folium.Map(
         location=[-15.788497, -47.879738], 
         zoom_start=4, 
-        tiles='CartoDB positron'
+        tiles=TILE_URL,
+        attr=TILE_ATTR
     )
     st_folium(mapa_brasil, width=600, height=400)
 
@@ -81,6 +85,7 @@ with col2:
     mapa_regional = folium.Map(
         location=[-15.788497, -47.879738], 
         zoom_start=6, 
-        tiles='CartoDB positron'
+        tiles=TILE_URL,
+        attr=TILE_ATTR
     )
     st_folium(mapa_regional, width=600, height=400)
